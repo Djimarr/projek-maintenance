@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Kendala Peralatan</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <a href="{{ url_for('index') }}" class="back-link">&larr; Kembali ke Menu</a>
+        <h1>Laporan Kendala Peralatan</h1>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Peralatan</th>
+                        <th>Seksi</th>
+                        <th>Poin Kendala</th>
+                        <th>Keterangan Teknisi</th>
+                        <th>Teknisi</th>
+                        <th>Detail Sesi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in kendala_list %}
+                    <tr>
+                        <td>{{ item.tanggal_tugas }}</td>
+                        <td>{{ item.equipment_name }}</td>
+                        <td>{{ item.section }}</td>
+                        <td>{{ item.question }}</td>
+                        <td class="kendala-keterangan">{{ item.keterangan }}</td>
+                        <td>{{ item.technician_1_name }}{% if item.technician_2_name %}, {{ item.technician_2_name }}{% endif %}</td>
+                        <td><a href="{{ url_for('detail_maintenance', session_id=item.session_id) }}" class="button">Lihat Sesi</a></td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7">Tidak ada kendala yang tercatat. Semua berjalan normal.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

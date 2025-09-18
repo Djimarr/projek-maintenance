@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Maintenance #{{ session.id }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <a href="{{ url_for('kendala') }}" class="back-link">&larr; Kembali ke Laporan Kendala</a>
+        <h1>Detail Maintenance Sesi #{{ session.id }}</h1>
+        <div class="info">
+            <p><strong>Peralatan:</strong> {{ session.equipment_name }}</p>
+            <p><strong>Teknisi:</strong> {{ session.technician_1_name }}{% if session.technician_2_name %}, {{ session.technician_2_name }}{% endif %}</p>
+            <p><strong>Tanggal Tugas:</strong> {{ session.tanggal_tugas }}</p>
+            <p><strong>Ringkasan Akhir:</strong> {{ session.summary or '-' }}</p>
+            <p><strong>Foto:</strong> 
+                {% if session.image_path %}
+                    <a href="{{ url_for('serve_image', filename=session.image_path.split('/')[-1]) }}" target="_blank">Lihat Foto</a>
+                {% else %}
+                    Tidak ada foto
+                {% endif %}
+            </p>
+        </div>
+
+        <h2>Hasil Checklist</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Seksi</th>
+                    <th>Poin Pengecekan</th>
+                    <th>Status</th>
+                    <th>Nilai/Value</th>
+                    <th>Keterangan</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %}
+                <tr class="{{ 'status-nok' if record.response_status == 'NOK' }}">
+                    <td>{{ record.section }}</td>
+                    <td>{{ record.question }}</td>
+                    <td>{{ record.response_status or 'N/A' }}</td>
+                    <td>{{ record.response_value or '-' }}</td>
+                    <td>{{ record.keterangan or '-' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

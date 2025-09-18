@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logbook Harian Teknisi</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <a href="{{ url_for('index') }}" class="back-link">&larr; Kembali ke Menu</a>
+        <h1>Logbook Harian Teknisi</h1>
+        <div class="table-wrapper">
+            <table class="spreadsheet-table">
+                <thead>
+                    <tr>
+                        <th class="no">No</th>
+                        <th class="tanggal">Tanggal</th>
+                        <th class="jadwal">Jadwal</th>
+                        <th class="kegiatan">Catatan Kegiatan</th>
+                        <th class="tod">Teknisi On Duty (TOD)</th>
+                        <th class="foto">Foto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for date, shifts in logbook_data.items() %}
+                        {% set outer_loop = loop %}
+                        <tr>
+                            <td rowspan="{{ 2 }}">{{ outer_loop.index }}</td>
+                            <td rowspan="{{ 2 }}">{{ date }}</td>
+                            <td class="jadwal">PS</td>
+                            {% if shifts.PS %}
+                                <td>
+                                    <ul>
+                                    {% for line in shifts.PS.summary.split('\n') %}
+                                        <li>{{ line }}</li>
+                                    {% endfor %}
+                                    </ul>
+                                </td>
+                                <td>{{ shifts.PS.technician_1_name }}{% if shifts.PS.technician_2_name %}, {{ shifts.PS.technician_2_name }}{% endif %}</td>
+                                <td>
+                                    {% if shifts.PS.image_path %}
+                                        <a href="{{ url_for('serve_image', filename=shifts.PS.image_path.split('/')[-1]) }}" target="_blank">Lihat Foto</a>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                            {% else %}
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            {% endif %}
+                        </tr>
+                        <tr>
+                            <td class="jadwal">MT</td>
+                             {% if shifts.MT %}
+                                <td>
+                                    <ul>
+                                    {% for line in shifts.MT.summary.split('\n') %}
+                                        <li>{{ line }}</li>
+                                    {% endfor %}
+                                    </ul>
+                                </td>
+                                <td>{{ shifts.MT.technician_1_name }}{% if shifts.MT.technician_2_name %}, {{ shifts.MT.technician_2_name }}{% endif %}</td>
+                                <td>
+                                    {% if shifts.MT.image_path %}
+                                        <a href="{{ url_for('serve_image', filename=shifts.MT.image_path.split('/')[-1]) }}" target="_blank">Lihat Foto</a>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                            {% else %}
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            {% endif %}
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6">Belum ada data logbook.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

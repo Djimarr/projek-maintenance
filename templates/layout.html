@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Operasional</title>
+    <!-- Font Awesome untuk Ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <h2><i class="fa-solid fa-tower-broadcast"></i> CMMS TEKNISI</h2>
+        </div>
+
+        <div class="sidebar-user">
+            <!-- Gambar profil placeholder -->
+            <img src="https://ui-avatars.com/api/?name=Teknisi+User&background=0D8ABC&color=fff&rounded=true" alt="User">
+            <div>
+                <h4>Teknisi On Duty</h4>
+                <small>User Akses</small>
+            </div>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li>
+                <a href="{{ url_for('index') }}" class="{{ 'active' if request.endpoint == 'index' else '' }}">
+                    <i class="fa-solid fa-gauge-high"></i> <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('logbook') }}" class="{{ 'active' if request.endpoint == 'logbook' else '' }}">
+                    <i class="fa-solid fa-book-open"></i> <span>Logbook Harian</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('kendala') }}" class="{{ 'active' if request.endpoint == 'kendala' else '' }}">
+                    <i class="fa-solid fa-triangle-exclamation"></i> <span>Laporan Kendala</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('support') }}" class="{{ 'active' if request.endpoint == 'support' else '' }}">
+                    <i class="fa-solid fa-headset"></i> <span>Tiket Support IT</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <header>
+            <div class="header-title">
+                <h2>
+                    <label for="nav-toggle">
+                        <i class="fa-solid fa-bars"></i>
+                    </label>
+                    Dashboard Operasional
+                </h2>
+            </div>
+
+            <div class="user-wrapper">
+                <div>
+                    <h4>Stasiun Meteorologi</h4>
+                    <small>Sistem Monitoring</small>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+</body>
+</html>

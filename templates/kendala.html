@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>Laporan Kendala & Work Order</h3>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table width="100%">
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Tanggal</th>
+                        <th>Peralatan / Seksi</th>
+                        <th>Poin Kendala</th>
+                        <th>Keterangan</th>
+                        <th>Catatan Perbaikan</th>
+                        <th>Tindak Lanjut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in kendala_list %}
+                    <tr>
+                        <td>
+                            {% if item.ticket_status == 'RESOLVED' %}
+                                <span class="status green">SELESAI</span>
+                            {% else %}
+                                <span class="status red">OPEN</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ item.tanggal_tugas }}</td>
+                        <td>
+                            <strong>{{ item.equipment_name }}</strong><br>
+                            <small style="color:#777;">{{ item.section }}</small>
+                        </td>
+                        <td>{{ item.question }}</td>
+                        <td style="color:#c0392b;">{{ item.keterangan }}</td>
+                        <td>{{ item.ticket_note or '-' }}</td>
+                        <td>
+                            {% if item.ticket_status != 'RESOLVED' %}
+                                <form action="{{ url_for('update_ticket', record_id=item.record_id) }}" method="POST">
+                                    <input type="hidden" name="status" value="RESOLVED">
+                                    <input type="text" name="note" placeholder="Catatan perbaikan..." required style="width:100%; margin-bottom:5px;">
+                                    <button type="submit" class="button" style="background:#2ecc71; width:100%;">Selesai</button>
+                                </form>
+                            {% else %}
+                                <a href="{{ url_for('detail_maintenance', session_id=item.session_id) }}" style="color:var(--main-color); font-size:0.8rem;">Lihat Detail</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="7" style="text-align:center;">Tidak ada kendala.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

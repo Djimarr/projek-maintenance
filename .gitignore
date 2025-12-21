@@ -1,0 +1,8 @@
+venv/
+myenv/
+maintenance.db
+.gitignore.swp
+images/
+logbook_photos/
+reports/
+

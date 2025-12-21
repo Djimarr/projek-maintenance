@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>Detail Maintenance Sesi #{{ session.id }}</h3>
+        <div style="display:flex; gap:10px;">
+            <a href="{{ url_for('kendala') }}" class="button" style="background:#777;">Kembali</a>
+            <form action="{{ url_for('delete_session', session_id=session.id) }}" method="POST" onsubmit="return confirm('Hapus seluruh laporan ini?');">
+                <button type="submit" class="btn-delete">Hapus Laporan</button>
+            </form>
+        </div>
+    </div>
+    <div class="card-body">
+        <div style="background:#f9f9f9; padding:15px; border-radius:5px; margin-bottom:20px;">
+            <p><strong>Peralatan:</strong> {{ session.equipment_name }}</p>
+            <p><strong>Teknisi:</strong> {{ session.technician_1_name }}</p>
+            <p><strong>Tanggal:</strong> {{ session.tanggal_tugas }}</p>
+            <p><strong>Foto:</strong> 
+                {% if session.image_path %}
+                    <a href="{{ url_for('serve_image', filename=session.image_path.split('/')[-1]) }}" target="_blank">Lihat Foto</a>
+                {% else %} - {% endif %}
+            </p>
+        </div>
+
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th>Seksi</th>
+                    <th>Poin</th>
+                    <th>Status</th>
+                    <th>Nilai</th>
+                    <th>Ket</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %}
+                <!-- Gunakan class dinamis: 'row-nok' jika statusnya NOK -->
+                <tr class="{{ 'row-nok' if record.response_status == 'NOK' else '' }}">
+                    <td>{{ record.section }}</td>
+                    <td>{{ record.question }}</td>
+                    <td>
+                        <!-- Badge status agar lebih cantik -->
+                        {% if record.response_status == 'NOK' %}
+                            <span class="status red">NOK</span>
+                        {% else %}
+                            <span class="status green">OK</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ record.response_value or '-' }}</td>
+                    <td>{{ record.keterangan or '-' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

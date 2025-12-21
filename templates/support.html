@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>Tiket Support IT</h3>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table width="100%">
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Tgl Lapor</th>
+                        <th>Pelapor</th>
+                        <th>Kategori</th>
+                        <th>Masalah</th>
+                        <th>Foto</th>
+                        <th>Tindak Lanjut</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ticket in tickets %}
+                    <tr>
+                        <td>
+                            {% if ticket.status == 'RESOLVED' %}
+                                <span class="status green">SELESAI</span>
+                            {% else %}
+                                <span class="status red">{{ ticket.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ ticket.created_at }}</td>
+                        <td>{{ ticket.reporter_name }}</td>
+                        <td>{{ ticket.issue_category }}</td>
+                        <td>{{ ticket.issue_description }}</td>
+                        <td>
+                            {% if ticket.image_path %}
+                                <a href="{{ url_for('serve_image', filename=ticket.image_path.split('/')[-1]) }}" target="_blank"><i class="fa-solid fa-image"></i></a>
+                            {% else %}-{% endif %}
+                        </td>
+                        <td>
+                            {% if ticket.status != 'RESOLVED' %}
+                                <form action="{{ url_for('update_support_ticket', ticket_id=ticket.id) }}" method="POST">
+                                    <select name="status" style="margin-bottom:5px; width:100%;">
+                                        <option value="IN_PROGRESS">Proses</option>
+                                        <option value="RESOLVED">Selesai</option>
+                                    </select>
+                                    <input type="text" name="note" placeholder="Catatan..." value="{{ ticket.technician_note or '' }}" required style="width:100%; margin-bottom:5px;">
+                                    <button type="submit" class="button">Update</button>
+                                </form>
+                            {% else %}
+                                <small>{{ ticket.technician_note }}</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form action="{{ url_for('delete_ticket', ticket_id=ticket.id) }}" method="POST" onsubmit="return confirm('Hapus tiket ini?');">
+                                <button type="submit" class="btn-delete"><i class="fa-solid fa-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="8" style="text-align:center;">Belum ada tiket support.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

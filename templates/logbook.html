@@ -1,0 +1,96 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>Logbook Harian Teknisi</h3>
+        
+        <!-- Filter Form -->
+        <form action="{{ url_for('logbook') }}" method="get" style="display:flex; gap:10px;">
+            <input type="month" name="filter_date" value="{{ current_filter }}">
+            <button type="submit" class="button">Filter</button>
+            <a href="{{ url_for('logbook') }}" style="align-self:center; font-size:0.9rem;">Reset</a>
+        </form>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table width="100%">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Tanggal</th>
+                        <th>Jadwal</th>
+                        <th>Catatan Kegiatan</th>
+                        <th>TOD</th>
+                        <th>Foto</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for date, shifts in logbook_data.items() %}
+                        {% set outer_loop = loop %}
+                        <!-- Baris Shift PS -->
+                        <tr style="border-bottom: 1px solid #eee;">
+                            <td rowspan="2">{{ outer_loop.index }}</td>
+                            <td rowspan="2">{{ date }}</td>
+                            <td><strong>PS</strong></td>
+                            {% if shifts.PS %}
+                                <td>
+                                    <ul style="padding-left:15px; list-style-type:disc;">
+                                    {% for line in shifts.PS.summary.split('\n') %}
+                                        <li>{{ line }}</li>
+                                    {% endfor %}
+                                    </ul>
+                                </td>
+                                <td>{{ shifts.PS.technician_1_name }}</td>
+                                <td>
+                                    {% if shifts.PS.image_path %}
+                                        <a href="{{ url_for('serve_image', filename=shifts.PS.image_path.split('/')[-1]) }}" target="_blank"><i class="fa-solid fa-image"></i></a>
+                                    {% else %} - {% endif %}
+                                </td>
+                                <td>
+                                    <form action="{{ url_for('delete_session', session_id=shifts.PS.id) }}" method="POST" onsubmit="return confirm('Hapus?');">
+                                        <button type="submit" class="btn-delete"><i class="fa-solid fa-trash"></i></button>
+                                    </form>
+                                </td>
+                            {% else %}
+                                <td colspan="3" style="background-color: #fff3cd; color:#856404; font-size:0.8rem;">Belum diisi</td>
+                                <td>-</td>
+                            {% endif %}
+                        </tr>
+                        <!-- Baris Shift MT -->
+                        <tr>
+                            <td><strong>MT</strong></td>
+                             {% if shifts.MT %}
+                                <td>
+                                    <ul style="padding-left:15px; list-style-type:disc;">
+                                    {% for line in shifts.MT.summary.split('\n') %}
+                                        <li>{{ line }}</li>
+                                    {% endfor %}
+                                    </ul>
+                                </td>
+                                <td>{{ shifts.MT.technician_1_name }}</td>
+                                <td>
+                                    {% if shifts.MT.image_path %}
+                                        <a href="{{ url_for('serve_image', filename=shifts.MT.image_path.split('/')[-1]) }}" target="_blank"><i class="fa-solid fa-image"></i></a>
+                                    {% else %} - {% endif %}
+                                </td>
+                                <td>
+                                    <form action="{{ url_for('delete_session', session_id=shifts.MT.id) }}" method="POST" onsubmit="return confirm('Hapus?');">
+                                        <button type="submit" class="btn-delete"><i class="fa-solid fa-trash"></i></button>
+                                    </form>
+                                </td>
+                            {% else %}
+                                <td colspan="3" style="background-color: #fff3cd; color:#856404; font-size:0.8rem;">Belum diisi</td>
+                                <td>-</td>
+                            {% endif %}
+                        </tr>
+                    {% else %}
+                        <tr><td colspan="7" style="text-align:center;">Data Kosong</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

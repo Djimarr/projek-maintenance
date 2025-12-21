@@ -1,0 +1,136 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="cards-grid">
+    <!-- Card 1: Kendala Open -->
+    <div class="card-single card-red">
+        <div>
+            <h1>{{ stats.open_issues }}</h1>
+            <span>Kendala Alat (Open)</span>
+        </div>
+        <div>
+            <i class="fa-solid fa-screwdriver-wrench"></i>
+        </div>
+        <div class="card-footer">
+            <a href="{{ url_for('kendala') }}">More info <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+    </div>
+
+    <!-- Card 2: Support Ticket -->
+    <div class="card-single card-purple">
+        <div>
+            <h1>{{ stats.support_open }}</h1>
+            <span>Tiket Support IT</span>
+        </div>
+        <div>
+            <i class="fa-solid fa-laptop-medical"></i>
+        </div>
+        <div class="card-footer">
+            <a href="{{ url_for('support') }}">More info <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+    </div>
+
+    <!-- Card 3: Maintenance Month -->
+    <div class="card-single card-blue">
+        <div>
+            <h1>{{ stats.maint_month }}</h1>
+            <span>Sesi Maintenance (Bulan Ini)</span>
+        </div>
+        <div>
+            <i class="fa-solid fa-calendar-check"></i>
+        </div>
+        <div class="card-footer">
+            <a href="#">Data Bulan Ini <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+    </div>
+
+    <!-- Card 4: Logbook Status -->
+    <div class="card-single {{ 'card-green' if stats.logbook_filled else 'card-orange' }}">
+        <div>
+            <h1>{{ 'OK' if stats.logbook_filled else '!' }}</h1>
+            <span>{{ 'Logbook Terisi' if stats.logbook_filled else 'Logbook Belum Diisi' }}</span>
+        </div>
+        <div>
+            <i class="fa-solid fa-clipboard-list"></i>
+        </div>
+        <div class="card-footer">
+            <a href="{{ url_for('logbook') }}">Cek Logbook <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Orders / Kendala Section -->
+<div class="recent-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+    
+    <!-- TABEL 1: KENDALA ALAT -->
+    <div class="card">
+        <div class="card-header">
+            <h3>Kendala Alat (Maintenance)</h3>
+            <a href="{{ url_for('kendala') }}" class="btn-see-all">Lihat Semua</a>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table width="100%">
+                    <thead>
+                        <tr>
+                            <th>Tgl</th>
+                            <th>Alat</th>
+                            <th>Masalah</th>
+                            <th>PIC</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for issue in maint_issues %}
+                        <tr>
+                            <td>{{ issue.tanggal_tugas }}</td>
+                            <td>{{ issue.equipment_name }}</td>
+                            <td>{{ issue.question }}</td>
+                            <td>{{ issue.technician_1_name }}</td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="4" style="text-align:center;">Aman.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABEL 2: TIKET SUPPORT IT -->
+    <div class="card">
+        <div class="card-header">
+            <h3>Tiket Support IT</h3>
+            <a href="{{ url_for('support') }}" class="btn-see-all">Lihat Semua</a>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table width="100%">
+                    <thead>
+                        <tr>
+                            <th>Pelapor</th>
+                            <th>Kategori</th>
+                            <th>Masalah</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ticket in support_issues %}
+                        <tr>
+                            <td>{{ ticket.reporter_name }}</td>
+                            <td>{{ ticket.issue_category }}</td>
+                            <td>{{ ticket.issue_description }}</td>
+                            <td>
+                                <span class="status {{ 'red' if ticket.status == 'OPEN' else 'green' }}">{{ ticket.status }}</span>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="4" style="text-align:center;">Tidak ada tiket baru.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

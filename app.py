@@ -1,17 +1,21 @@
 import sqlite3
 import os
 import requests 
+import pandas as pd
 from flask import Flask, render_template, g, send_from_directory, request, redirect, url_for
 from collections import defaultdict
 from datetime import datetime
 
 DATABASE = 'maintenance.db'
 IMAGE_DIR = 'images'
+UPLOAD_FOLDER = 'uploads'
 TELEGRAM_BOT_TOKEN = "7625689953:AAHNg2vnEexzW3qG3fVVmrW3fIXAV7RkdSk" # Token Bot Anda
 
-
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app = Flask(__name__)
 app.secret_key = 'super_secret_key_maintenance_app'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 
 # --- Fungsi Kirim Notifikasi Telegram ---
 def send_telegram_notification(chat_id, message):
@@ -108,7 +112,30 @@ def index():
         LIMIT 5
     """)
 
-    return render_template('index.html', stats=stats, maint_issues=recent_maint_issues, support_issues=recent_support_issues)
+    # 2. Baca Jadwal Excel
+    schedule_html = None
+    schedule_path = os.path.join(app.config['UPLOAD_FOLDER'], 'current_schedule.xlsx')
+    
+    if os.path.exists(schedule_path):
+        try:
+            # Baca tanpa header agar format asli terlihat
+            df = pd.read_excel(schedule_path, header=None) 
+            schedule_html = df.to_html(classes='schedule-table', index=False, header=False, na_rep='')
+        except Exception as e:
+            schedule_html = f"<p style='color:red;'>Gagal membaca jadwal: {e}</p>"
+
+    return render_template('index.html', stats=stats, schedule_html=schedule_html, maint_issues=recent_maint_issues, support_issues=recent_support_issues)
+
+@app.route('/upload_schedule', methods=['GET', 'POST'])
+def upload_schedule():
+    if request.method == 'POST':
+        if 'file' not in request.files: return redirect(request.url)
+        file = request.files['file']
+        if file.filename == '': return redirect(request.url)
+        if file and file.filename.endswith(('.xlsx', '.xls')):
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], 'current_schedule.xlsx'))
+            return redirect(url_for('index'))
+    return render_template('upload_schedule.html')
 
 @app.route('/logbook')
 def logbook():

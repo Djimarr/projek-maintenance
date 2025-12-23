@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 0 auto; margin-top: 50px;">
+    <div class="card-header">
+        <h3>Upload Jadwal Maintenance Baru</h3>
+        <a href="{{ url_for('index') }}" class="button" style="background:#777;">Batal</a>
+    </div>
+    <div class="card-body">
+        <p style="margin-bottom: 20px;">Silakan upload file jadwal dalam format Excel (<strong>.xlsx</strong>). File ini akan menggantikan jadwal yang tampil di dashboard.</p>
+        
+        <form action="" method="post" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 15px;">
+            <div style="border: 2px dashed #ccc; padding: 30px; text-align: center; border-radius: 5px; background: #f9f9f9;">
+                <i class="fa-solid fa-file-excel" style="font-size: 2rem; color: #2ecc71; margin-bottom: 10px;"></i><br>
+                <input type="file" name="file" accept=".xlsx, .xls" required style="border: none; margin: 0 auto;">
+            </div>
+            <button type="submit" class="button" style="padding: 12px; font-size: 1rem; background: var(--main-color);">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Upload & Tampilkan
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

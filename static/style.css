@@ -303,3 +303,51 @@ input[type="month"], select, input[type="text"] {
 .row-nok:hover {
     background-color: #fadbd8 !important;
 }
+
+/* Style Khusus Tabel Jadwal Excel */
+.schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem; /* Font agak kecil agar muat banyak */
+}
+
+.schedule-table th, .schedule-table td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: center;
+    min-width: 30px; /* Lebar minimum per sel */
+}
+
+/* Header baris pertama (biasanya tanggal) */
+.schedule-table tr:first-child {
+    background-color: var(--main-color);
+    color: white;
+    font-weight: bold;
+}
+
+/* Baris ganjil/genap */
+.schedule-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.schedule-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Kolom Pertama Sticky (Agar nama alat tetap terlihat saat scroll ke kanan) */
+.schedule-table tr td:first-child {
+    position: sticky;
+    left: 0;
+    background-color: #fff;
+    font-weight: 500;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+    z-index: 10;
+    text-align: left;
+    padding-left: 15px;
+}
+
+.schedule-container {
+    max-height: 600px;
+    overflow-y: auto; /* Scroll vertikal */
+    overflow-x: auto; /* Scroll horizontal wajib untuk 31 kolom */
+}
